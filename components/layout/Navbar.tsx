@@ -22,6 +22,13 @@ const typeColor: Record<string, string> = {
   attendance: '#EF4444',
 }
 
+interface NavbarProps {
+  userName?: string
+  userRole?: string
+  userEmail?: string
+  settingsHref?: string
+}
+
 function formatDateTime(date: Date) {
   return new Intl.DateTimeFormat('en-US', {
     weekday: 'short',
@@ -33,17 +40,18 @@ function formatDateTime(date: Date) {
   }).format(date)
 }
 
-export default function Navbar() {
+export default function Navbar({ userName, userRole, userEmail, settingsHref = '/settings' }: NavbarProps) {
   const { user, role, logout } = useAuthStore()
   const [now, setNow] = useState(() => new Date())
   const [showNotifications, setShowNotifications] = useState(false)
   const [showProfile, setShowProfile] = useState(false)
   const [logoFailed, setLogoFailed] = useState(false)
-  const navRef = useRef<HTMLDivElement>(null)
+  const navRef = useRef<HTMLElement>(null)
 
   const unreadCount = notifications.filter((notification) => !notification.isRead).length
-  const displayName = user?.name || 'Admin User'
-  const displayRole = role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Administrator'
+  const displayName = userName || user?.name || 'Admin User'
+  const displayRole = userRole || (role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Administrator')
+  const displayEmail = userEmail || user?.email || 'admin@school.edu'
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 60_000)
@@ -277,11 +285,11 @@ export default function Navbar() {
             >
               <div style={{ padding: 16, borderBottom: `1px solid ${BORDER}` }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: '#0D0D0D' }}>{displayName}</div>
-                <div style={{ fontSize: 12, color: '#6B6660', marginTop: 2 }}>{user?.email || 'admin@school.edu'}</div>
+                <div style={{ fontSize: 12, color: '#6B6660', marginTop: 2 }}>{displayEmail}</div>
                 <div style={{ fontSize: 12, color: GOLD, marginTop: 6, fontWeight: 700 }}>{displayRole}</div>
               </div>
               <Link
-                href="/settings"
+                href={settingsHref}
                 onClick={() => setShowProfile(false)}
                 onMouseEnter={(event) => { event.currentTarget.style.background = '#F7F6F3' }}
                 onMouseLeave={(event) => { event.currentTarget.style.background = 'white' }}
