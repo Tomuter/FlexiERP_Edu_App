@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, BookOpen } from 'lucide-react'
 import { useAuthStore } from '@/lib/auth-store'
+import AppFooter from '@/components/layout/AppFooter'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
@@ -42,8 +43,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center"
+    <div className="min-h-screen flex flex-col"
          style={{ background: '#F7F6F3', fontFamily: '"Palatino Linotype", Palatino, serif' }}>
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-10">
 
       {/* Logo */}
       <div className="flex items-center gap-3 mb-8">
@@ -127,9 +129,8 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <p className="mt-6 text-xs" style={{ color: '#6B6660' }}>
-        © 2025 EduManage – School Management System
-      </p>
+      </main>
+      <AppFooter compact />
     </div>
   )
 }

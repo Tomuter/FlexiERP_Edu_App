@@ -76,32 +76,47 @@ export default function PortalSidebar({ page, role, setPage, setRole }: SidebarP
 
       <nav style={{ flex: 1, padding: '12px 10px', overflowY: 'auto' }}>
         <p style={{ margin: '0 0 6px 10px', fontSize: 10, color: '#444', letterSpacing: 1, textTransform: 'uppercase', fontFamily: 'monospace' }}>Menu</p>
-        {allNav.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => setPage(item.id as PageType)}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              padding: '9px 12px',
-              borderRadius: 8,
-              border: 'none',
-              cursor: 'pointer',
-              background: page === item.id ? '#C9A02020' : 'transparent',
-              color: page === item.id ? '#C9A020' : '#888',
-              fontSize: 13,
-              fontWeight: page === item.id ? 600 : 400,
-              marginBottom: 2,
-              textAlign: 'left',
-              borderLeft: page === item.id ? '3px solid #C9A020' : '3px solid transparent',
-            }}
-          >
-            <item.Icon size={16} strokeWidth={page === item.id ? 2.2 : 1.8} />
-            {item.label}
-          </button>
-        ))}
+        {allNav.map((item) => {
+          const active = page === item.id
+
+          return (
+            <button
+              key={item.id}
+              onClick={() => setPage(item.id as PageType)}
+              onMouseEnter={(event) => {
+                event.currentTarget.style.color = '#C9A020'
+                if (!active) {
+                  event.currentTarget.style.background = 'rgba(255,255,255,0.08)'
+                }
+              }}
+              onMouseLeave={(event) => {
+                event.currentTarget.style.color = active ? '#C9A020' : '#FFFFFF'
+                event.currentTarget.style.background = active ? '#C9A02020' : 'transparent'
+              }}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                padding: '9px 12px',
+                borderRadius: 8,
+                border: 'none',
+                cursor: 'pointer',
+                background: active ? '#C9A02020' : 'transparent',
+                color: active ? '#C9A020' : '#FFFFFF',
+                fontSize: 13,
+                fontWeight: active ? 600 : 400,
+                marginBottom: 2,
+                textAlign: 'left',
+                borderLeft: active ? '3px solid #C9A020' : '3px solid transparent',
+                transition: 'background 0.18s ease, color 0.18s ease',
+              }}
+            >
+              <item.Icon size={16} strokeWidth={active ? 2.2 : 1.8} />
+              {item.label}
+            </button>
+          )
+        })}
       </nav>
 
       <div style={{ padding: '14px 16px', borderTop: '1px solid #222' }}>
