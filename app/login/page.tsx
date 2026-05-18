@@ -1,32 +1,51 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, BookOpen } from 'lucide-react'
 import { useAuthStore } from '@/lib/auth-store'
+import AppFooter from '@/components/layout/AppFooter'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { login, isLoading } = useAuthStore()
+  const { login, isLoading, role } = useAuthStore()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
   const [remember, setRemember] = useState(false)
 
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('edu_remember_email')
+    if (savedEmail) {
+      setEmail(savedEmail)
+      setRemember(true)
+    }
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       await login(email, password)
+      if (remember) {
+        localStorage.setItem('edu_remember_email', email)
+      } else {
+        localStorage.removeItem('edu_remember_email')
+      }
       toast.success('Welcome back!')
-      router.push('/dashboard')
+      if (role === 'parent' || role === 'student') {
+        router.push('/portal')
+      } else {
+        router.push('/dashboard')
+      }
     } catch {
       toast.error('Invalid credentials. Please try again.')
     }
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center"
+    <div className="min-h-screen flex flex-col"
          style={{ background: '#F7F6F3', fontFamily: '"Palatino Linotype", Palatino, serif' }}>
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-10">
 
       {/* Logo */}
       <div className="flex items-center gap-3 mb-8">
@@ -65,7 +84,13 @@ export default function LoginPage() {
             <div className="flex justify-between mb-2">
               <label className="text-xs font-semibold tracking-widest uppercase"
                      style={{ color: '#6B6660' }}>Password</label>
-              <a href="#" className="text-xs font-medium" style={{ color: '#C9A020' }}>Forgot password?</a>
+              <button
+                type="button"
+                onClick={() => toast('Password reset is not configured yet.')}
+                className="text-xs font-medium"
+                style={{ color: '#C9A020' }}>
+                Forgot password?
+              </button>
             </div>
             <div className="relative">
               <input
@@ -104,9 +129,8 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <p className="mt-6 text-xs" style={{ color: '#6B6660' }}>
-        © 2025 EduManage – School Management System
-      </p>
+      </main>
+      <AppFooter compact />
     </div>
   )
 }

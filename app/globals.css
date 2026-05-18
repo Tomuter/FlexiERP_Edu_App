@@ -77,11 +77,11 @@ body { min-height: 100vh; }
     font-size: 0.875rem;
     transition: all 0.2s;
     cursor: pointer;
-    color: rgba(255,255,255,0.70);
+    color: #FFFFFF;
     text-decoration: none;
   }
   .sidebar-nav-item:hover {
-    color: white;
+    color: var(--gold);
     background: rgba(255,255,255,0.08);
   }
   .sidebar-nav-item.active {

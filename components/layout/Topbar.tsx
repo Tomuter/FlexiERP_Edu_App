@@ -1,7 +1,5 @@
 'use client'
-import { Bell, Plus, Search } from 'lucide-react'
-import { useAuthStore } from '@/lib/auth-store'
-import { getInitials } from '@/lib/utils'
+import { Plus, Search } from 'lucide-react'
 
 interface TopbarProps {
   title?: string
@@ -9,11 +7,14 @@ interface TopbarProps {
 }
 
 export default function Topbar({ title, action }: TopbarProps) {
-  const { user } = useAuthStore()
-
   return (
     <header className="topbar">
-      <div className="flex items-center gap-3 flex-1">
+      <div className="flex items-center gap-4 flex-1 min-w-0">
+        {title && (
+          <h2 className="text-lg font-bold truncate" style={{ color: '#0D0D0D' }}>
+            {title}
+          </h2>
+        )}
         <div className="relative">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
@@ -33,20 +34,6 @@ export default function Topbar({ title, action }: TopbarProps) {
             {action.label}
           </button>
         )}
-
-        {/* Notifications */}
-        <button className="relative w-9 h-9 rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
-                style={{ border: '1px solid #E4E1D8' }}>
-          <Bell size={16} style={{ color: '#0D0D0D' }} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full"
-                style={{ background: '#C9A020' }} />
-        </button>
-
-        {/* Avatar */}
-        <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white cursor-pointer"
-             style={{ background: '#C9A020' }}>
-          {user ? getInitials(user.name) : 'AD'}
-        </div>
       </div>
     </header>
   )
