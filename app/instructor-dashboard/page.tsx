@@ -53,11 +53,11 @@ export default function InstructorDashboardPage() {
             const active = activeSection === id
             return (
               <button key={id} onClick={() => setActiveSection(id)}
-                className="flex items-center gap-3 w-full px-4 py-3 mx-2 rounded-lg text-sm transition-all text-left"
+                className={`flex items-center gap-3 w-full px-4 py-3 mx-2 rounded-lg text-sm transition-all text-left ${!active ? 'hover:text-[#C9A020] hover:bg-[rgba(201,160,32,0.10)]' : ''}`}
                 style={{
                   width: 'calc(100% - 16px)',
-                  color: active ? '#C9A020' : 'rgba(255,255,255,0.70)',
-                  background: active ? 'rgba(201,160,32,0.15)' : 'transparent',
+                  color: active ? '#C9A020' : 'rgba(255, 255, 255, 1)',
+                  background: active ? 'rgba(201,160,32,0.15)' : undefined,
                   border: active ? '1px solid rgba(201,160,32,0.30)' : '1px solid transparent',
                 }}>
                 <Icon size={16} />
@@ -70,13 +70,13 @@ export default function InstructorDashboardPage() {
         {/* Bottom: User + Logout */}
         <div className="p-3" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           <div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm"
-            style={{ color: 'rgba(255,255,255,0.70)' }}>
+            style={{ color: 'rgba(255, 255, 255, 1)' }}>
             <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
               style={{ background: 'rgba(201,160,32,0.3)', color: '#C9A020' }}>RF</div>
             <span>Dr. R. Feynman</span>
           </div>
           <button className="flex items-center gap-3 w-full px-4 py-2 rounded-lg text-sm transition-all hover:text-red-400"
-            style={{ color: 'rgba(255,255,255,0.50)' }}>
+            style={{ color: 'rgba(255, 255, 255, 1)' }}>
             <LogOut size={16} />
             <span>Logout</span>
           </button>
