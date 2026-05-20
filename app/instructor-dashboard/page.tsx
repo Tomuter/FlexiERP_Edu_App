@@ -1,9 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import {
   LayoutDashboard, ClipboardCheck, CalendarDays, FileText,
-  Users, BarChart3, LogOut, BookOpen, MessageCircle
+  Users, BarChart3, LogOut, BookOpen, MessageCircle, Settings
 } from 'lucide-react'
 import type { Section } from './_types'
 import DashboardSection from './_sections/DashboardSection'
@@ -28,6 +28,19 @@ const sidebarItems: { id: Section; label: string; icon: typeof LayoutDashboard }
 
 export default function InstructorDashboardPage() {
   const [activeSection, setActiveSection] = useState<Section>('dashboard')
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
+
+  // Close popup when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   return (
     <div className="flex min-h-screen" style={{ background: '#F7F6F3' }}>
@@ -67,19 +80,37 @@ export default function InstructorDashboardPage() {
           })}
         </nav>
 
-        {/* Bottom: User + Logout */}
-        <div className="p-3" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm"
+        {/* Bottom: User with Popup */}
+        <div className="p-3 relative" ref={userMenuRef} style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <button
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm transition-all hover:bg-[rgba(201,160,32,0.10)] cursor-pointer"
             style={{ color: 'rgba(255, 255, 255, 1)' }}>
             <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
               style={{ background: 'rgba(201,160,32,0.3)', color: '#C9A020' }}>RF</div>
             <span>Dr. R. Feynman</span>
-          </div>
-          <button className="flex items-center gap-3 w-full px-4 py-2 rounded-lg text-sm transition-all hover:text-red-400"
-            style={{ color: 'rgba(255, 255, 255, 1)' }}>
-            <LogOut size={16} />
-            <span>Logout</span>
           </button>
+
+          {/* Popup Menu */}
+          {showUserMenu && (
+            <div className="absolute bottom-full left-3 right-3 mb-2 rounded-lg py-1 shadow-lg"
+              style={{ background: '#1A1A1A', border: '1px solid rgba(255,255,255,0.12)' }}>
+              <button
+                onClick={() => { setShowUserMenu(false) }}
+                className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-all hover:bg-[rgba(201,160,32,0.10)] hover:text-[#C9A020]"
+                style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                <Settings size={15} />
+                <span>Settings</span>
+              </button>
+              <button
+                onClick={() => { setShowUserMenu(false) }}
+                className="flex items-center gap-3 w-full px-4 py-2.5 text-sm transition-all hover:bg-red-500/10 hover:text-red-400"
+                style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                <LogOut size={15} />
+                <span>Logout</span>
+              </button>
+            </div>
+          )}
         </div>
       </aside>
 
