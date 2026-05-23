@@ -42,7 +42,11 @@ function formatDateTime(date: Date) {
 
 export default function Navbar({ userName, userRole, userEmail, settingsHref = '/settings' }: NavbarProps) {
   const { user, role, logout } = useAuthStore()
+<<<<<<< HEAD
   const [now, setNow] = useState<Date | null>(null)
+=======
+  const [now, setNow] = useState(() => new Date())
+>>>>>>> origin/main
   const [showNotifications, setShowNotifications] = useState(false)
   const [showProfile, setShowProfile] = useState(false)
   const [logoFailed, setLogoFailed] = useState(false)
@@ -54,7 +58,10 @@ export default function Navbar({ userName, userRole, userEmail, settingsHref = '
   const displayEmail = userEmail || user?.email || 'admin@school.edu'
 
   useEffect(() => {
+<<<<<<< HEAD
     setNow(new Date())
+=======
+>>>>>>> origin/main
     const timer = window.setInterval(() => setNow(new Date()), 60_000)
     return () => window.clearInterval(timer)
   }, [])
@@ -128,13 +135,22 @@ export default function Navbar({ userName, userRole, userEmail, settingsHref = '
           )}
         </div>
         <div>
+<<<<<<< HEAD
           <div style={{ fontSize: 16, fontWeight: 700, color: '#0D0D0D', lineHeight: 1.1 }}>Flexi Software</div>
+=======
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#0D0D0D', lineHeight: 1.1 }}>EduManage</div>
+>>>>>>> origin/main
           <div style={{ fontSize: 12, color: '#6B6660', lineHeight: 1.2 }}>School Administration</div>
         </div>
       </div>
 
+<<<<<<< HEAD
       <div style={{ color: '#4B4640', fontSize: 14, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap', flex: 1, minHeight: '1.5em' }}>
         {now ? formatDateTime(now) : ''}
+=======
+      <div style={{ color: '#4B4640', fontSize: 14, fontWeight: 600, textAlign: 'center', whiteSpace: 'nowrap', flex: 1 }}>
+        {formatDateTime(now)}
+>>>>>>> origin/main
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 12, minWidth: 290 }}>

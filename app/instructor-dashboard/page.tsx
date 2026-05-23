@@ -1,9 +1,17 @@
 'use client'
+<<<<<<< HEAD
 import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import {
   LayoutDashboard, ClipboardCheck, CalendarDays, FileText,
   Users, BarChart3, LogOut, BookOpen, MessageCircle, Settings
+=======
+import { useState } from 'react'
+import Image from 'next/image'
+import {
+  LayoutDashboard, ClipboardCheck, CalendarDays, FileText,
+  Users, BarChart3, LogOut, BookOpen, MessageCircle
+>>>>>>> origin/main
 } from 'lucide-react'
 import type { Section } from './_types'
 import DashboardSection from './_sections/DashboardSection'
@@ -28,6 +36,7 @@ const sidebarItems: { id: Section; label: string; icon: typeof LayoutDashboard }
 
 export default function InstructorDashboardPage() {
   const [activeSection, setActiveSection] = useState<Section>('dashboard')
+<<<<<<< HEAD
   const [showUserMenu, setShowUserMenu] = useState(false)
   const userMenuRef = useRef<HTMLDivElement>(null)
 
@@ -41,6 +50,8 @@ export default function InstructorDashboardPage() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+=======
+>>>>>>> origin/main
 
   return (
     <div className="flex min-h-screen" style={{ background: '#F7F6F3' }}>
@@ -80,15 +91,22 @@ export default function InstructorDashboardPage() {
           })}
         </nav>
 
+<<<<<<< HEAD
         {/* Bottom: User with Popup */}
         <div className="p-3 relative" ref={userMenuRef} style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           <button
             onClick={() => setShowUserMenu(!showUserMenu)}
             className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm transition-all hover:bg-[rgba(201,160,32,0.10)] cursor-pointer"
+=======
+        {/* Bottom: User + Logout */}
+        <div className="p-3" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm"
+>>>>>>> origin/main
             style={{ color: 'rgba(255, 255, 255, 1)' }}>
             <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
               style={{ background: 'rgba(201,160,32,0.3)', color: '#C9A020' }}>RF</div>
             <span>Dr. R. Feynman</span>
+<<<<<<< HEAD
           </button>
 
           {/* Popup Menu */}
@@ -111,6 +129,14 @@ export default function InstructorDashboardPage() {
               </button>
             </div>
           )}
+=======
+          </div>
+          <button className="flex items-center gap-3 w-full px-4 py-2 rounded-lg text-sm transition-all hover:text-red-400"
+            style={{ color: 'rgba(255, 255, 255, 1)' }}>
+            <LogOut size={16} />
+            <span>Logout</span>
+          </button>
+>>>>>>> origin/main
         </div>
       </aside>
 

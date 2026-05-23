@@ -1,6 +1,9 @@
 'use client'
 
+<<<<<<< HEAD
 import Image from 'next/image'
+=======
+>>>>>>> origin/main
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -26,6 +29,10 @@ const adminNavItems = [
   { label: 'Reports',         href: '/reports',         icon: BarChart3 },
   { label: 'Results',         href: '/results',         icon: Zap },
   { label: 'Report Card',     href: '/report-card',     icon: FileText },
+<<<<<<< HEAD
+=======
+  { label: 'Portal',          href: '/portal',          icon: ExternalLink },
+>>>>>>> origin/main
 ]
 
 const studentNavItems = [
@@ -57,6 +64,7 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
+<<<<<<< HEAD
       <div className="sidebar-logo">
         <Link href="/dashboard" className="flex items-center gap-3 min-w-0">
           <Image
@@ -69,6 +77,8 @@ export default function Sidebar() {
           />
         </Link>
       </div>
+=======
+>>>>>>> origin/main
       <nav className="flex-1 overflow-y-auto py-2 space-y-0.5">
         {navItems.map(({ label, href, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(href + '/')

@@ -3,12 +3,35 @@ import { useQuery } from '@tanstack/react-query'
 import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import { reportApi } from '@/lib/api'
+<<<<<<< HEAD
 import { adminMockViews } from '@/lib/admin-mock-db'
 import { useState, useMemo } from 'react'
 import { BarChart2, Download, Filter, X, Award, TrendingUp, User } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const MOCK_ANALYTICS = adminMockViews.reports
+=======
+import { useState } from 'react'
+import { BarChart2, Download } from 'lucide-react'
+
+const MOCK_ANALYTICS = {
+  enrollment: [
+    { q: 'Q1', current: 1200, prev: 900 },
+    { q: 'Q2', current: 1800, prev: 1400 },
+    { q: 'Q3', current: 3200, prev: 2000 },
+    { q: 'Q4', current: 3600, prev: 2400 },
+  ],
+  fee_collected_pct: 82,
+  top_performers: [
+    { name: 'Eleanor Vance', grade: '12th Grade', score: 98.5 },
+    { name: 'Luke Crain', grade: '11th Grade', score: 97.2 },
+    { name: 'Theodora Crain', grade: '10th Grade', score: 96.8 },
+    { name: 'Shirley Crain', grade: '12th Grade', score: 95.0 },
+  ],
+  student_staff_ratio: '1:24',
+  attendance: { students: 94, faculty: 98, support: 92 },
+}
+>>>>>>> origin/main
 
 export default function ReportsPage() {
   const { data = MOCK_ANALYTICS } = useQuery({
@@ -21,6 +44,7 @@ export default function ReportsPage() {
   const [dateFrom, setDateFrom] = useState('2023-10-01')
   const [dateTo, setDateTo] = useState('2023-10-31')
   const [modules, setModules] = useState({ enrollment: true, financial: true, academic: true })
+<<<<<<< HEAD
   
   // Top Performers State
   const [showTopPerformersModal, setShowTopPerformersModal] = useState(false)
@@ -38,6 +62,11 @@ export default function ReportsPage() {
     toast.success(`Generating ${format} for ${Object.keys(modules).filter(k => modules[k as keyof typeof modules]).join(', ')}...`)
   }
 
+=======
+
+  const maxVal = Math.max(...data.enrollment.map((d: typeof MOCK_ANALYTICS['enrollment'][0]) => Math.max(d.current, d.prev)))
+
+>>>>>>> origin/main
   return (
     <AppLayout>
       <Topbar />
@@ -116,16 +145,25 @@ export default function ReportsPage() {
               <div className="card col-span-1">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold">Top Performers</h3>
+<<<<<<< HEAD
                   <button onClick={() => setShowTopPerformersModal(true)} className="text-xs font-semibold hover:underline" style={{ color: '#C9A020' }}>
                     View All
                   </button>
+=======
+                  <a href="#" className="text-xs" style={{ color: '#C9A020' }}>View All</a>
+>>>>>>> origin/main
                 </div>
                 <div className="space-y-0">
                   <div className="grid grid-cols-3 text-xs font-semibold uppercase tracking-wider pb-2 border-b mb-2" style={{ color: '#6B6660', borderColor: '#E4E1D8' }}>
                     <span>Student</span><span>Grade</span><span>Score</span>
                   </div>
+<<<<<<< HEAD
                   {data.top_performers.slice(0, 4).map((p: any, i: number) => (
                     <div key={p.id} className={`grid grid-cols-3 text-sm py-2.5 ${i < 3 ? 'border-b' : ''}`}
+=======
+                  {data.top_performers.map((p: typeof MOCK_ANALYTICS['top_performers'][0], i: number) => (
+                    <div key={p.name} className={`grid grid-cols-3 text-sm py-2.5 ${i < data.top_performers.length - 1 ? 'border-b' : ''}`}
+>>>>>>> origin/main
                          style={{ borderColor: '#E4E1D8' }}>
                       <span className="font-medium truncate">{p.name}</span>
                       <span style={{ color: '#6B6660' }}>{p.grade}</span>
@@ -209,16 +247,24 @@ export default function ReportsPage() {
                   ))}
                 </div>
               </div>
+<<<<<<< HEAD
               <button onClick={handleGenerateReport} className="btn-gold w-full flex items-center justify-center gap-2">
                 <BarChart2 size={14} /> Generate Report
               </button>
               <button onClick={() => toast.success('Exporting raw data to CSV...')} className="btn-outline w-full flex items-center justify-center gap-2">
+=======
+              <button className="btn-gold w-full flex items-center justify-center gap-2">
+                <BarChart2 size={14} /> Generate Report
+              </button>
+              <button className="btn-outline w-full flex items-center justify-center gap-2">
+>>>>>>> origin/main
                 <Download size={14} /> Export Data
               </button>
             </div>
           </div>
         </div>
       </div>
+<<<<<<< HEAD
 
       {/* Top Performers Modal */}
       {showTopPerformersModal && (
@@ -347,6 +393,8 @@ export default function ReportsPage() {
           </div>
         </div>
       )}
+=======
+>>>>>>> origin/main
     </AppLayout>
   )
 }

@@ -1,5 +1,9 @@
 export type Section = 'dashboard' | 'attendance' | 'schedule' | 'assessment' | 'groups' | 'performance' | 'lesson-plans' | 'messages'
+<<<<<<< HEAD
 export type AttendanceStatus = 'P' | 'A' | 'L' | 'S'
+=======
+export type AttendanceStatus = 'P' | 'A' | 'L' | 'H'
+>>>>>>> origin/main
 export type AttendanceMode = 'daily' | 'period'
 
 export type ScheduleSlot = {

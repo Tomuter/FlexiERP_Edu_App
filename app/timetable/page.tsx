@@ -1,13 +1,23 @@
 'use client'
+<<<<<<< HEAD
 import { useEffect, useMemo, useState } from 'react'
 import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import toast from 'react-hot-toast'
 import { Sparkles, MapPin, Pencil, X } from 'lucide-react'
+=======
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import AppLayout from '@/components/layout/AppLayout'
+import Topbar from '@/components/layout/Topbar'
+import { timetableApi } from '@/lib/api'
+import { Sparkles, MapPin } from 'lucide-react'
+>>>>>>> origin/main
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as const
 type Day = typeof DAYS[number]
 
+<<<<<<< HEAD
 type StoredSubject = {
   id: string
   name: string
@@ -37,12 +47,50 @@ function safeJsonParse<T>(raw: string | null): T | null {
   } catch {
     return null
   }
+=======
+const MOCK_TIMETABLE: Record<string, Array<{ time: string; subject: string; teacher: string; room: string; live?: boolean } | { time: string; type: 'break' | 'free'; label: string }>> = {
+  Monday: [
+    { time: '08:00 AM', subject: 'Advanced Physics', teacher: 'Dr. R. Feynman', room: 'Lab 4A', live: true },
+    { time: '09:00 AM', subject: 'Chemistry', teacher: 'Dr. M. Curie', room: 'Lab 1C', live: true },
+    { time: '10:00 AM', type: 'break', label: 'Morning Break' },
+    { time: '10:30 AM', subject: 'Physical Ed.', teacher: 'Coach Carter', room: 'Gymnasium' },
+  ],
+  Tuesday: [
+    { time: '08:00 AM', subject: 'Mathematics II', teacher: 'Prof. A. Turing', room: 'Room 302' },
+    { time: '09:00 AM', subject: 'World History', teacher: 'Mr. H. Zinn', room: 'Room 210' },
+    { time: '10:00 AM', type: 'break', label: 'Morning Break' },
+    { time: '10:30 AM', type: 'free', label: 'Study Hall' },
+  ],
+  Wednesday: [
+    { time: '08:00 AM', subject: 'Literature', teacher: 'Ms. V. Woolf', room: 'Room 105' },
+    { time: '09:00 AM', type: 'free', label: 'Free Period' },
+    { time: '10:00 AM', type: 'break', label: 'Morning Break' },
+    { time: '10:30 AM', subject: 'Biology', teacher: 'Dr. C. Darwin', room: 'Lab 3B' },
+  ],
+  Thursday: [
+    { time: '08:00 AM', subject: 'Advanced Physics', teacher: 'Dr. R. Feynman', room: 'Lab 4A' },
+    { time: '09:00 AM', subject: 'Chemistry', teacher: 'Dr. M. Curie', room: 'Lab 1C' },
+    { time: '10:00 AM', type: 'break', label: 'Morning Break' },
+    { time: '10:30 AM', subject: 'Physical Ed.', teacher: 'Coach Carter', room: 'Gymnasium' },
+  ],
+  Friday: [
+    { time: '08:00 AM', subject: 'Computer Sci', teacher: 'Mr. C. Babbage', room: 'Lab 2B' },
+    { time: '09:00 AM', subject: 'Mathematics II', teacher: 'Prof. A. Turing', room: 'Room 302' },
+    { time: '10:00 AM', type: 'break', label: 'Morning Break' },
+    { time: '10:30 AM', subject: 'Literature', teacher: 'Ms. V. Woolf', room: 'Room 105' },
+  ],
+}
+
+function isBreak(e: typeof MOCK_TIMETABLE['Monday'][0]): e is { time: string; type: 'break' | 'free'; label: string } {
+  return 'type' in e
+>>>>>>> origin/main
 }
 
 export default function TimetablePage() {
   const [activeDay, setActiveDay] = useState<Day>('Monday')
   const [cls, setCls] = useState('Grade 10')
   const [section, setSection] = useState('Section A (Science)')
+<<<<<<< HEAD
   const [grid, setGrid] = useState<TimetableGrid>(() => {
     const init: TimetableGrid = { Monday: {}, Tuesday: {}, Wednesday: {}, Thursday: {}, Friday: {} }
     DAYS.forEach(d => {
@@ -190,6 +238,8 @@ export default function TimetablePage() {
     setEditingSlot(null)
     toast.success('Slot updated')
   }
+=======
+>>>>>>> origin/main
 
   return (
     <AppLayout>
@@ -232,7 +282,11 @@ export default function TimetablePage() {
                 </button>
               ))}
             </div>
+<<<<<<< HEAD
             <button onClick={handleGenerate} className="btn-gold flex items-center gap-1.5">
+=======
+            <button className="btn-gold flex items-center gap-1.5">
+>>>>>>> origin/main
               <Sparkles size={14} /> Generate Timetable
             </button>
           </div>
@@ -251,8 +305,17 @@ export default function TimetablePage() {
                 </tr>
               </thead>
               <tbody>
+<<<<<<< HEAD
                 {TIMES.map((time) => {
                   if (time === BREAK_TIME) {
+=======
+                {['08:00 AM', '09:00 AM', '10:00 AM', '10:30 AM'].map((time, ri) => {
+                  // Check if this row is a special row in Monday's data
+                  const mondayEntry = MOCK_TIMETABLE.Monday.find(e => e.time === time)
+                  const isBreakRow = mondayEntry && isBreak(mondayEntry) && mondayEntry.type === 'break'
+
+                  if (isBreakRow) {
+>>>>>>> origin/main
                     return (
                       <tr key={time} style={{ background: '#F7F6F3' }}>
                         <td className="px-4 py-2 text-xs font-mono" style={{ color: '#A09080', borderBottom: '1px solid #E4E1D8' }}>{time}</td>
@@ -267,6 +330,7 @@ export default function TimetablePage() {
                     <tr key={time} style={{ borderBottom: '1px solid #E4E1D8' }}>
                       <td className="px-4 py-3 text-xs font-mono align-top pt-4" style={{ color: '#A09080' }}>{time}</td>
                       {DAYS.map(day => {
+<<<<<<< HEAD
                         const cell = grid[day][time]
                         return (
                           <td
@@ -305,6 +369,33 @@ export default function TimetablePage() {
                                 Free Period
                               </div>
                             )}
+=======
+                        const entry = MOCK_TIMETABLE[day].find(e => e.time === time)
+                        if (!entry) return <td key={day} className="px-3 py-3" />
+                        if (isBreak(entry)) {
+                          return (
+                            <td key={day} className="px-3 py-3">
+                              <div className="rounded-lg px-3 py-2.5 text-center text-xs" style={{ background: '#F7F6F3', color: '#6B6660' }}>
+                                {entry.label}
+                              </div>
+                            </td>
+                          )
+                        }
+                        return (
+                          <td key={day} className="px-3 py-3">
+                            <div className="rounded-xl p-3 transition-all hover:shadow-md cursor-pointer relative"
+                                 style={{ background: 'white', border: '1px solid #E4E1D8' }}>
+                              {entry.live && (
+                                <span className="absolute top-2 right-2 text-xs px-1.5 py-0.5 rounded-full font-semibold"
+                                      style={{ background: '#ECFDF5', color: '#059669' }}>LIVE</span>
+                              )}
+                              <p className="font-bold text-sm mb-1">{entry.subject}</p>
+                              <p className="text-xs mb-1.5" style={{ color: '#6B6660' }}>{entry.teacher}</p>
+                              <div className="flex items-center gap-1 text-xs" style={{ color: '#A09080' }}>
+                                <MapPin size={10} /> {entry.room}
+                              </div>
+                            </div>
+>>>>>>> origin/main
                           </td>
                         )
                       })}
@@ -316,6 +407,7 @@ export default function TimetablePage() {
           </div>
         </div>
       </div>
+<<<<<<< HEAD
 
       {editingSlot && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
@@ -352,6 +444,8 @@ export default function TimetablePage() {
           </div>
         </div>
       )}
+=======
+>>>>>>> origin/main
     </AppLayout>
   )
 }
