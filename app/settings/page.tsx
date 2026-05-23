@@ -4,26 +4,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import { settingsApi } from '@/lib/api'
+import { adminMockViews } from '@/lib/admin-mock-db'
 import toast from 'react-hot-toast'
 import { Plus, Pencil, Megaphone, X, Check, Users } from 'lucide-react'
 
-const MOCK_CLASSES = [
-  { id: '1', level: 'Nursery', sections: 'A, B', capacity_used: 40, capacity_total: 50, lead_faculty: 'Sarah Jenkins' },
-  { id: '2', level: 'Grade 1', sections: 'A, B, C', capacity_used: 85, capacity_total: 90, lead_faculty: 'Michael Chen' },
-  { id: '3', level: 'Grade 10', sections: 'Science, Arts', capacity_used: 110, capacity_total: 120, lead_faculty: 'Dr. Robert Vance' },
-]
-const MOCK_STAFF = [
-  'Sarah Jenkins', 'Michael Chen', 'Dr. Robert Vance', 'Emma Watson', 'John Doe', 'Maria Garcia'
-]
-const MOCK_TERMS = [
-  { id: '1', name: 'Fall Term 2023', start: 'Sept 1', end: 'Dec 15', weeks: 14, status: 'Active' },
-  { id: '2', name: 'Spring Term 2024', start: 'Jan 10', end: 'May 20', weeks: 18, status: 'Upcoming' },
-]
-const MOCK_NOTICES = [
-  { id: '1', title: 'Emergency Weather Protocol', audience: 'ALL STAFF & STUDENTS', body: 'Please review the updated winter weather protocols. In case of heavy snow, school…', date: 'Today', highlight: true },
-  { id: '2', title: 'Faculty Meeting Rescheduled', audience: 'FACULTY ONLY', body: 'The monthly departmental review has been moved from Tuesday to Thursday afterno…', date: 'Yesterday', highlight: false },
-  { id: '3', title: 'End of Term Examinations Schedule', audience: 'GRADE 9-12', body: 'The preliminary schedule for the Fall term finals has been posted. Please ensure all…', date: 'Oct 12', highlight: false },
-]
+const MOCK_CLASSES = adminMockViews.settings.classes
+const MOCK_STAFF = adminMockViews.settings.staff
+const MOCK_TERMS = adminMockViews.settings.terms
+const MOCK_NOTICES = adminMockViews.settings.notices
 
 export default function SettingsPage() {
   const [year, setYear] = useState('2023 - 2024')

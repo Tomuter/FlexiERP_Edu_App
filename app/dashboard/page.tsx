@@ -6,6 +6,7 @@ import Topbar from '@/components/layout/Topbar'
 import { dashboardApi } from '@/lib/api'
 import { formatCurrency } from '@/lib/utils'
 import { useAuthStore } from '@/lib/auth-store'
+import { adminMockViews } from '@/lib/admin-mock-db'
 import ParentDashboard from '@/components/dashboard/ParentDashboard'
 import StudentDashboard from '@/components/dashboard/StudentDashboard'
 import {
@@ -14,23 +15,8 @@ import {
 } from 'lucide-react'
 
 // ── Fallback mock data (used until Laravel API is wired) ──────────────────
-const MOCK_STATS = {
-  total_students: 2451, total_students_change: '+3.2% vs last term',
-  total_staff: 184, staff_change: 'No change',
-  term_revenue: 1200000, revenue_change: '+8.4% YoY', revenue_collected_pct: 75,
-  attendance_today: 96.8, attendance_change: '-0.5% vs yesterday',
-  absent_count: 12, late_count: 4,
-}
-const MOCK_ACTIVITIES = [
-  { id: 1, type: 'payment', title: 'Term Fee Payment Received', desc: 'Payment of $4,500 recorded for Student ID: 10452 (Grade 10).', time: '10 mins ago' },
-  { id: 2, type: 'admission', title: 'New Admission Application', desc: 'Application #A-2025-089 submitted for Grade 5. Pending review.', time: '1 hour ago' },
-  { id: 3, type: 'meeting', title: 'Staff Meeting Scheduled', desc: 'Principal called for a general staff meeting on Friday at 3:00 PM.', time: '3 hours ago' },
-  { id: 4, type: 'system', title: 'System Maintenance Alert', desc: 'Scheduled portal downtime this Sunday from 02:00 AM to 04:00 AM.', time: 'Yesterday' },
-  { id: 5, type: 'admission', title: 'Admission Interview Scheduled', desc: 'Interview for Grade 1 applicant (Olayinka S.) set for Monday.', time: 'Yesterday' },
-  { id: 6, type: 'payment', title: 'Bulk Uniform Purchase', desc: 'Inventory restock: 200 units of primary school blazers purchased.', time: '2 days ago' },
-  { id: 7, type: 'meeting', title: 'PTA Executive Meeting', desc: 'Discussion on the upcoming Sports Day logistics and security.', time: '2 days ago' },
-  { id: 8, type: 'system', title: 'Database Backup Completed', desc: 'Weekly automated backup of student records successfully stored.', time: '3 days ago' },
-]
+const MOCK_STATS = adminMockViews.dashboard.stats
+const MOCK_ACTIVITIES = adminMockViews.dashboard.activities
 
 const activityDot: Record<string, string> = {
   payment: '#C9A020', admission: '#10B981', meeting: '#6B7280', system: '#6B7280'
@@ -70,7 +56,7 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
-      <Topbar action={{ label: 'New Entry', onClick: () => {} }} />
+      
 
       <div className="page-header animate-in">
         <div className="gold-accent" />

@@ -3,33 +3,12 @@ import { useQuery } from '@tanstack/react-query'
 import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import { reportApi } from '@/lib/api'
+import { adminMockViews } from '@/lib/admin-mock-db'
 import { useState, useMemo } from 'react'
 import { BarChart2, Download, Filter, X, Award, TrendingUp, User } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-const MOCK_TOP_PERFORMERS = [
-  { id: '1', name: 'Eleanor Vance', grade: 'Grade 12', score: 98.5, section: 'Section A' },
-  { id: '2', name: 'Luke Crain', grade: 'Grade 11', score: 97.2, section: 'Section B' },
-  { id: '3', name: 'Theodora Crain', grade: 'Grade 10', score: 96.8, section: 'Section A' },
-  { id: '4', name: 'Shirley Crain', grade: 'Grade 12', score: 95.0, section: 'Section A' },
-  { id: '5', name: 'Steven Crain', grade: 'Grade 9', score: 94.2, section: 'Section B' },
-  { id: '6', name: 'Nell Crain', grade: 'Grade 10', score: 93.8, section: 'Section B' },
-  { id: '7', name: 'Olivia Crain', grade: 'Grade 11', score: 92.5, section: 'Section A' },
-  { id: '8', name: 'Hugh Crain', grade: 'Grade 12', score: 91.0, section: 'Section B' },
-]
-
-const MOCK_ANALYTICS = {
-  enrollment: [
-    { q: 'Q1', current: 1200, prev: 900 },
-    { q: 'Q2', current: 1800, prev: 1400 },
-    { q: 'Q3', current: 3200, prev: 2000 },
-    { q: 'Q4', current: 3600, prev: 2400 },
-  ],
-  fee_collected_pct: 82,
-  top_performers: MOCK_TOP_PERFORMERS,
-  student_staff_ratio: '1:24',
-  attendance: { students: 94, faculty: 98, support: 92 },
-}
+const MOCK_ANALYTICS = adminMockViews.reports
 
 export default function ReportsPage() {
   const { data = MOCK_ANALYTICS } = useQuery({

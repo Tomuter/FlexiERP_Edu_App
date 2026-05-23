@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -25,7 +26,6 @@ const adminNavItems = [
   { label: 'Reports',         href: '/reports',         icon: BarChart3 },
   { label: 'Results',         href: '/results',         icon: Zap },
   { label: 'Report Card',     href: '/report-card',     icon: FileText },
-  { label: 'Portal',          href: '/portal',          icon: ExternalLink },
 ]
 
 const studentNavItems = [
@@ -57,6 +57,18 @@ export default function Sidebar() {
 
   return (
     <aside className="sidebar">
+      <div className="sidebar-logo">
+        <Link href="/dashboard" className="flex items-center gap-3 min-w-0">
+          <Image
+            src="/WHITE%20FLEXI%20LOGO.png"
+            alt="FlexiERP"
+            width={120}
+            height={32}
+            priority
+            style={{ height: 'auto', width: '120px' }}
+          />
+        </Link>
+      </div>
       <nav className="flex-1 overflow-y-auto py-2 space-y-0.5">
         {navItems.map(({ label, href, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(href + '/')

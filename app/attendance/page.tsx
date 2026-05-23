@@ -4,12 +4,9 @@ import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import toast from 'react-hot-toast'
 import { FileText, Download, Filter, CheckCircle, XCircle, TrendingUp } from 'lucide-react'
+import { adminMockViews } from '@/lib/admin-mock-db'
 
-const MOCK_SUMMARY = [
-  { id: 1, grade: 'Grade 10', section: 'Science', subject: 'Advanced Physics', date: 'May 20, 2026', present: 42, absent: 3, percentage: 93 },
-  { id: 2, grade: 'Grade 11', section: 'Arts', subject: 'History', date: 'May 20, 2026', present: 38, absent: 2, percentage: 95 },
-  { id: 3, grade: 'Grade 12', section: 'Science', subject: 'Calculus', date: 'May 19, 2026', present: 25, absent: 5, percentage: 83 },
-]
+const MOCK_SUMMARY = adminMockViews.attendance.summary
 
 export default function AttendancePage() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])

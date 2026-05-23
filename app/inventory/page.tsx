@@ -5,21 +5,13 @@ import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import { inventoryApi } from '@/lib/api'
 import { AlertTriangle, ShoppingCart, MoreVertical, X, Check, PackagePlus, UserMinus } from 'lucide-react'
+import { adminMockViews } from '@/lib/admin-mock-db'
 
 const CATS = ['All Categories', 'Books & Media', 'Furniture', 'Lab Equipment', 'Stationary', 'IT & Electronics']
 const STATUS_OPTS = ['All Items', 'In Stock', 'Low Stock Alert']
-const MOCK_STAFF = ['Dr. Robert Chen', 'Sarah Jenkins', 'Prof. Alan Smith', 'Emma Watson', 'John Doe', 'Maria Garcia']
+const MOCK_STAFF = adminMockViews.inventory.staff
 
-const MOCK_ITEMS = {
-  total: 248,
-  items: [
-    { id: 'INV-1042', name: 'Advanced Physics Textbook', category: 'Books & Media', stock: 145, reorder: 50, status: 'Optimal' },
-    { id: 'INV-2091', name: 'Student Desks (Standard)', category: 'Furniture', stock: 12, reorder: 20, status: 'Low Stock' },
-    { id: 'INV-3015', name: 'Beaker Set 500ml', category: 'Lab Equipment', stock: 88, reorder: 30, status: 'Optimal' },
-    { id: 'INV-4402', name: 'Dry Erase Markers (Pack)', category: 'Stationary', stock: 5, reorder: 25, status: 'Low Stock' },
-    { id: 'INV-5110', name: 'Chromebook Pro', category: 'IT & Electronics', stock: 42, reorder: 10, status: 'Optimal' },
-  ]
-}
+const MOCK_ITEMS = { total: adminMockViews.inventory.total, items: adminMockViews.inventory.items }
 
 export default function InventoryPage() {
   const [cat, setCat] = useState('All Categories')

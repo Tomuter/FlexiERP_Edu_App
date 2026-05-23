@@ -6,56 +6,9 @@ import Topbar from '@/components/layout/Topbar'
 import { feeApi } from '@/lib/api'
 import { formatCurrency } from '@/lib/utils'
 import { Building2, AlertTriangle, Clock, MoreVertical, ChevronDown, BookOpen, ChevronLeft, ArrowRight } from 'lucide-react'
+import { adminMockViews } from '@/lib/admin-mock-db'
 
-const MOCK_FEE = {
-  total_collected: 1245000,
-  total_change: '+12% from last term',
-  pending_clearance: 84500,
-  pending_invoices: 42,
-  overdue_fees: 12350,
-  fee_types: [
-    // Grade 10 Breakdown
-    { id: 1, name: 'Tuition Fee', grade: 'Grade 10', amount: 3500, status: 'Active' },
-    { id: 2, name: 'Textbooks & Workbooks', grade: 'Grade 10', amount: 450, status: 'Active' },
-    { id: 3, name: 'Science Laboratory Fee', grade: 'Grade 10', amount: 200, status: 'Active' },
-    { id: 4, name: 'Computer & IT Levy', grade: 'Grade 10', amount: 150, status: 'Active' },
-    { id: 5, name: 'School Uniform Set', grade: 'Grade 10', amount: 300, status: 'Active' },
-    
-    // Grade 11 Breakdown
-    { id: 6, name: 'Tuition Fee', grade: 'Grade 11', amount: 4000, status: 'Active' },
-    { id: 7, name: 'Textbooks & Workbooks', grade: 'Grade 11', amount: 500, status: 'Active' },
-    { id: 8, name: 'Science Laboratory Fee', grade: 'Grade 11', amount: 250, status: 'Pending' },
-    { id: 9, name: 'Computer & IT Levy', grade: 'Grade 11', amount: 150, status: 'Active' },
-    { id: 10, name: 'Extracurricular Activities', grade: 'Grade 11', amount: 200, status: 'Active' },
-
-    // Grade 12 Breakdown
-    { id: 11, name: 'Tuition Fee', grade: 'Grade 12', amount: 4500, status: 'Active' },
-    { id: 12, name: 'Textbooks & Workbooks', grade: 'Grade 12', amount: 550, status: 'Active' },
-    { id: 13, name: 'Graduation & Alumni Fee', grade: 'Grade 12', amount: 600, status: 'Overdue' },
-    { id: 14, name: 'Career Guidance Levy', grade: 'Grade 12', amount: 100, status: 'Active' },
-    { id: 15, name: 'Examination Council Fee', grade: 'Grade 12', amount: 300, status: 'Active' },
-
-    // Grade 9 Breakdown
-    { id: 16, name: 'Tuition Fee', grade: 'Grade 9', amount: 3000, status: 'Active' },
-    { id: 17, name: 'Orientation Package', grade: 'Grade 9', amount: 200, status: 'Active' },
-    { id: 18, name: 'Textbooks & Workbooks', grade: 'Grade 9', amount: 400, status: 'Active' },
-    { id: 19, name: 'General Materials Fee', grade: 'Grade 9', amount: 100, status: 'Active' },
-
-    // General
-    { id: 20, name: 'Transportation (Bus Route A)', grade: 'All Grades', amount: 800, status: 'Active' },
-    { id: 21, name: 'Library Late Fees', grade: 'Various', amount: 45, status: 'Overdue' },
-  ],
-  recent_transactions: [
-    { id: 1, student: 'Alice Johnson', amount: 4500, method: 'Card ends *4211', desc: 'Tuition - ID #8472', time: 'Today, 09:41 AM', color: '#C9A020' },
-    { id: 2, student: 'Michael Smith', amount: 800, method: 'Bank Transfer', desc: 'Transport Fee - ID #9921', time: 'Yesterday, 14:22 PM', color: '#6B6660' },
-    { id: 3, student: 'Emma Davis', amount: 350, method: 'Cash', desc: 'Lab Fee - ID #7364', time: 'Oct 24, 11:05 AM', color: '#6B6660' },
-    { id: 4, student: 'System Auto-Billed', amount: 135, method: 'Automated', desc: 'Late Penalty Applied (3 Accounts)', time: 'Oct 23, 00:00 AM', color: '#EF4444' },
-    { id: 5, student: 'David Wilson', amount: 1200, method: 'Bank Transfer', desc: 'Graduation Fee - ID #1023', time: 'Oct 22, 10:15 AM', color: '#C9A020' },
-    { id: 6, student: 'Sarah Parker', amount: 300, method: 'Card ends *1189', desc: 'Uniform - ID #5542', time: 'Oct 21, 09:30 AM', color: '#6B6660' },
-    { id: 7, student: 'James Brown', amount: 150, method: 'Cash', desc: 'Robotics Fee - ID #2291', time: 'Oct 20, 16:45 PM', color: '#6B6660' },
-    { id: 8, student: 'Linda Garcia', amount: 5000, method: 'Bank Transfer', desc: 'Tuition - ID #8871', time: 'Oct 19, 11:20 AM', color: '#C9A020' },
-  ]
-}
+const MOCK_FEE = adminMockViews.fee_management
 
 const GRADES = ['All Grades', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12']
 

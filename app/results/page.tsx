@@ -1,27 +1,13 @@
 'use client'
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import toast from 'react-hot-toast'
-import { Pencil, Trash2, Plus, Download, Settings } from 'lucide-react'
+import { Pencil, Trash2, Plus, Settings, X } from 'lucide-react'
+import { adminMockViews } from '@/lib/admin-mock-db'
 
-const INITIAL_GRADING_SCALE = [
-  { id: '1', grade: 'A1', lower: 75, upper: 100, remark: 'EXCELLENT', color: '#C9A020' },
-  { id: '2', grade: 'B2', lower: 70, upper: 74, remark: 'VERY GOOD', color: '#10B981' },
-  { id: '3', grade: 'B3', lower: 65, upper: 69, remark: 'GOOD', color: '#3B82F6' },
-  { id: '4', grade: 'C4', lower: 60, upper: 64, remark: 'CREDIT', color: '#8B5CF6' },
-  { id: '5', grade: 'C5', lower: 55, upper: 59, remark: 'CREDIT', color: '#F59E0B' },
-  { id: '6', grade: 'C6', lower: 50, upper: 54, remark: 'CREDIT', color: '#EF4444' },
-  { id: '7', grade: 'F9', lower: 0, upper: 49, remark: 'FAIL', color: '#EF4444' },
-]
-
-const INITIAL_ASSESSMENTS = [
-  { id: '1', name: 'FIRST C. A', maxScore: 10 },
-  { id: '2', name: 'SECOND C. A', maxScore: 10 },
-  { id: '3', name: 'THIRD C. A', maxScore: 10 },
-  { id: '4', name: 'EXAM', maxScore: 70 },
-]
+const INITIAL_GRADING_SCALE = adminMockViews.results.grading_scale
+const INITIAL_ASSESSMENTS = adminMockViews.results.assessments
 
 export default function ResultsPage() {
   const [cls, setCls] = useState('Grade 10')
@@ -33,12 +19,26 @@ export default function ResultsPage() {
     'JSS 3': true,
     'Grade 10': false,
   })
+  const [templateByClass, setTemplateByClass] = useState<Record<string, string>>({
+    'Grade 9': 'Standard Academic Template',
+    'Grade 10': 'Standard Academic Template',
+    'Grade 11': 'Standard Academic Template',
+    'Grade 12': 'Standard Academic Template',
+    'JSS 1': 'Standard Academic Template',
+    'JSS 2': 'Standard Academic Template',
+    'JSS 3': 'Standard Academic Template',
+  })
+  const [showEditAssessment, setShowEditAssessment] = useState(false)
+  const [editAssessment, setEditAssessment] = useState<{ id: string; name: string; maxScore: string } | null>(null)
+  const [showEditGrade, setShowEditGrade] = useState(false)
+  const [editGrade, setEditGrade] = useState<{ id: string; lower: string; upper: string; grade: string; remark: string } | null>(null)
 
   const availableClasses = ['Grade 9', 'Grade 10', 'Grade 11', 'Grade 12', 'JSS 1', 'JSS 2', 'JSS 3']
+  const availableTemplates = ['Standard Academic Template', 'Continuous Assessment focused Template']
 
   const isTemplateDisabled = (targetCls: string) => {
     if (targetCls === 'All Grades') {
-      return Object.values(disabledTemplates).every(v => v)
+      return availableClasses.every(c => disabledTemplates[c] === true)
     }
     return !!disabledTemplates[targetCls]
   }
@@ -71,6 +71,20 @@ export default function ResultsPage() {
     toast.success('Assessment type removed')
   }
 
+  const openEditAssessment = (a: typeof INITIAL_ASSESSMENTS[number]) => {
+    setEditAssessment({ id: a.id, name: a.name, maxScore: String(a.maxScore) })
+    setShowEditAssessment(true)
+  }
+
+  const saveEditAssessment = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editAssessment) return
+    setAssessments(prev => prev.map(a => a.id === editAssessment.id ? { ...a, name: editAssessment.name, maxScore: Number(editAssessment.maxScore) } : a))
+    toast.success('Assessment updated')
+    setShowEditAssessment(false)
+    setEditAssessment(null)
+  }
+
   // Grading Scale Handlers
   const addGrade = () => {
     if (!newGrade.grade || !newGrade.lower || !newGrade.upper) return
@@ -92,10 +106,30 @@ export default function ResultsPage() {
     toast.success('Grade rule removed')
   }
 
-  const { data = { top_performers: [] } } = useQuery({
-    queryKey: ['analytics'],
-    queryFn: () => ({ data: { top_performers: [] } }),
-  })
+  const openEditGrade = (g: typeof INITIAL_GRADING_SCALE[number]) => {
+    setEditGrade({ id: g.id, lower: String(g.lower), upper: String(g.upper), grade: g.grade, remark: g.remark })
+    setShowEditGrade(true)
+  }
+
+  const saveEditGrade = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editGrade) return
+    setGradingScale(prev => prev.map(g => {
+      if (g.id !== editGrade.id) return g
+      return { ...g, lower: Number(editGrade.lower), upper: Number(editGrade.upper), grade: editGrade.grade, remark: editGrade.remark }
+    }))
+    toast.success('Grade rule updated')
+    setShowEditGrade(false)
+    setEditGrade(null)
+  }
+
+  const templateValue = (() => {
+    if (cls !== 'All Grades') return templateByClass[cls] || 'Standard Academic Template'
+    if (availableClasses.length === 0) return 'Standard Academic Template'
+    const first = templateByClass[availableClasses[0]] || 'Standard Academic Template'
+    const allSame = availableClasses.every(c => (templateByClass[c] || 'Standard Academic Template') === first)
+    return allSame ? first : 'Standard Academic Template'
+  })()
 
   return (
     <AppLayout>
@@ -142,7 +176,7 @@ export default function ResultsPage() {
                           <td className="text-center">{a.maxScore}</td>
                           <td className="text-right">
                             <div className="flex justify-end gap-1">
-                              <button className="p-1.5 rounded hover:bg-gray-100 text-blue-600"><Pencil size={14} /></button>
+                              <button onClick={() => openEditAssessment(a)} className="p-1.5 rounded hover:bg-gray-100 text-blue-600"><Pencil size={14} /></button>
                               <button onClick={() => deleteAssessment(a.id)} className="p-1.5 rounded hover:bg-red-50 text-red-600"><Trash2 size={14} /></button>
                             </div>
                           </td>
@@ -205,7 +239,7 @@ export default function ResultsPage() {
                           <td className="text-xs text-gray-500">{g.remark}</td>
                           <td className="text-right">
                             <div className="flex justify-end gap-1">
-                              <button className="p-1.5 rounded hover:bg-gray-100 text-blue-600"><Pencil size={14} /></button>
+                              <button onClick={() => openEditGrade(g)} className="p-1.5 rounded hover:bg-gray-100 text-blue-600"><Pencil size={14} /></button>
                               <button onClick={() => deleteGrade(g.id)} className="p-1.5 rounded hover:bg-red-50 text-red-600"><Trash2 size={14} /></button>
                             </div>
                           </td>
@@ -256,9 +290,23 @@ export default function ResultsPage() {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             <div className="card">
               <label className="block text-xs font-bold uppercase tracking-widest mb-2 text-gray-500">SELECT RESULT TEMPLATE</label>
-              <select className="select">
-                <option>Standard Academic Template</option>
-                <option>Continuous Assessment focused Template</option>
+              <select
+                className="select"
+                value={templateValue}
+                onChange={e => {
+                  const nextTemplate = e.target.value
+                  if (cls === 'All Grades') {
+                    const nextMap: Record<string, string> = {}
+                    availableClasses.forEach(c => nextMap[c] = nextTemplate)
+                    setTemplateByClass(nextMap)
+                    toast.success('Template updated for all grades')
+                  } else {
+                    setTemplateByClass(prev => ({ ...prev, [cls]: nextTemplate }))
+                    toast.success(`Template updated for ${cls}`)
+                  }
+                }}
+              >
+                {availableTemplates.map(t => <option key={t}>{t}</option>)}
               </select>
             </div>
             <div className={`card flex items-center justify-between gap-3 transition-colors ${isTemplateDisabled(cls) ? 'bg-red-50 border-red-100' : 'bg-green-50 border-green-100'}`}>
@@ -285,6 +333,108 @@ export default function ResultsPage() {
               </button>
             </div>
           </div>
+
+          {showEditAssessment && editAssessment && (
+            <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden">
+                <div className="px-8 py-6 border-b flex justify-between items-center bg-gray-50/50">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Edit Assessment</h2>
+                    <p className="text-xs text-gray-500 mt-1 uppercase tracking-widest">Update assessment name and score</p>
+                  </div>
+                  <button onClick={() => { setShowEditAssessment(false); setEditAssessment(null) }} className="p-2 hover:bg-gray-200 rounded-full">
+                    <X size={20} className="text-gray-500" />
+                  </button>
+                </div>
+                <form onSubmit={saveEditAssessment} className="p-8 space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Assessment Name</label>
+                    <input
+                      className="input w-full"
+                      value={editAssessment.name}
+                      onChange={e => setEditAssessment({ ...editAssessment, name: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Max Obtainable Score</label>
+                    <input
+                      type="number"
+                      className="input w-full"
+                      value={editAssessment.maxScore}
+                      onChange={e => setEditAssessment({ ...editAssessment, maxScore: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="pt-4 flex justify-end gap-3">
+                    <button type="button" onClick={() => { setShowEditAssessment(false); setEditAssessment(null) }} className="btn-outline px-8 py-2.5">Cancel</button>
+                    <button type="submit" className="btn-gold px-8 py-2.5">Save Changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {showEditGrade && editGrade && (
+            <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
+              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden">
+                <div className="px-8 py-6 border-b flex justify-between items-center bg-gray-50/50">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Edit Grade Rule</h2>
+                    <p className="text-xs text-gray-500 mt-1 uppercase tracking-widest">Update range, grade and remark</p>
+                  </div>
+                  <button onClick={() => { setShowEditGrade(false); setEditGrade(null) }} className="p-2 hover:bg-gray-200 rounded-full">
+                    <X size={20} className="text-gray-500" />
+                  </button>
+                </div>
+                <form onSubmit={saveEditGrade} className="p-8 space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Lower</label>
+                      <input
+                        type="number"
+                        className="input w-full"
+                        value={editGrade.lower}
+                        onChange={e => setEditGrade({ ...editGrade, lower: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Upper</label>
+                      <input
+                        type="number"
+                        className="input w-full"
+                        value={editGrade.upper}
+                        onChange={e => setEditGrade({ ...editGrade, upper: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Grade</label>
+                      <input
+                        className="input w-full"
+                        value={editGrade.grade}
+                        onChange={e => setEditGrade({ ...editGrade, grade: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Remark</label>
+                      <input
+                        className="input w-full"
+                        value={editGrade.remark}
+                        onChange={e => setEditGrade({ ...editGrade, remark: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <div className="pt-4 flex justify-end gap-3">
+                    <button type="button" onClick={() => { setShowEditGrade(false); setEditGrade(null) }} className="btn-outline px-8 py-2.5">Cancel</button>
+                    <button type="submit" className="btn-gold px-8 py-2.5">Save Changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </AppLayout>

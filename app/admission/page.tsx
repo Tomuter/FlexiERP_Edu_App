@@ -5,20 +5,12 @@ import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import { admissionApi } from '@/lib/api'
 import { getStatusColor } from '@/lib/utils'
+import { adminMockViews } from '@/lib/admin-mock-db'
 import { MoreVertical, ChevronLeft, ChevronRight, Filter, Plus, X, Upload, CheckCircle2, XCircle, Clock } from 'lucide-react'
 
 const TABS = ['New Applications', 'Shortlisted', 'Enrolled']
 
-const MOCK_ADMISSIONS = {
-  data: [
-    { id: 'APP-25-001', student_name: 'Eleanor Vance', program: 'Computer Science', date_applied: 'Oct 12, 2024', status: 'Admitted' },
-    { id: 'APP-25-002', student_name: 'Theodore Crain', program: 'Business Admin', date_applied: 'Oct 14, 2024', status: 'Pending Review' },
-    { id: 'APP-25-003', student_name: 'Shirley Jackson', program: 'Literature', date_applied: 'Oct 15, 2024', status: 'Under Evaluation' },
-    { id: 'APP-25-004', student_name: 'Luke Crain', program: 'Engineering', date_applied: 'Oct 18, 2024', status: 'Admitted' },
-    { id: 'APP-25-005', student_name: 'Steven Crain', program: 'Architecture', date_applied: 'Oct 20, 2024', status: 'Rejected' },
-  ],
-  total: 124, current_page: 1, last_page: 25
-}
+const MOCK_ADMISSIONS = adminMockViews.admission
 
 export default function AdmissionPage() {
   const [activeTab, setActiveTab] = useState(0)

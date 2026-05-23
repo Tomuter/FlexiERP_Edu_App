@@ -5,66 +5,12 @@ import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import { staffApi } from '@/lib/api'
 import { getInitials } from '@/lib/utils'
+import { adminMockViews } from '@/lib/admin-mock-db'
 import toast from 'react-hot-toast'
 import { Users, UserCheck, UserX, Eye, Pencil, ChevronLeft, ChevronRight, X, Phone, Mail, MapPin, Briefcase, Calendar } from 'lucide-react'
 
-const MOCK_STAFF_MEMBERS = [
-  { 
-    id: '1', 
-    name: 'Dr. Sarah Jenkins', 
-    role: 'Head of Mathematics', 
-    department: 'Mathematics Dept.', 
-    email: 's.jenkins@edumanage.edu', 
-    phone: '+234 801 234 5678',
-    address: '12 Victoria Island, Lagos',
-    joinDate: 'Sept 12, 2018',
-    status: 'Active', 
-    avatar: null 
-  },
-  { 
-    id: '2', 
-    name: 'Prof. Robert Chen', 
-    role: 'Senior Lecturer', 
-    department: 'Physics Dept.', 
-    email: 'r.chen@edumanage.edu', 
-    phone: '+234 802 345 6789',
-    address: '45 Lekki Phase 1, Lagos',
-    joinDate: 'Jan 05, 2020',
-    status: 'Active', 
-    avatar: null 
-  },
-  { 
-    id: '3', 
-    name: 'Elena Rostova', 
-    role: 'Academic Coordinator', 
-    department: 'Administration', 
-    email: 'e.rostova@edumanage.edu', 
-    phone: '+234 803 456 7890',
-    address: '22 Ikeja GRA, Lagos',
-    joinDate: 'Mar 20, 2021',
-    status: 'On Leave', 
-    avatar: null 
-  },
-  { id: '4', name: 'David Kim', role: 'Adjunct Professor', department: 'Humanities Dept.', email: 'd.kim@edumanage.edu', phone: '+234 804 567 8901', address: 'Surulere, Lagos', joinDate: 'Aug 15, 2022', status: 'Active', avatar: null },
-  { id: '5', name: 'Prof. Alan Smith', role: 'Senior Lecturer', department: 'English Dept.', email: 'a.smith@edumanage.edu', phone: '+234 805 678 9012', address: 'Yaba, Lagos', joinDate: 'Feb 10, 2019', status: 'Active', avatar: null },
-  { id: '6', name: 'Dr. Maria Santos', role: 'Lab Instructor', department: 'Science Dept.', email: 'm.santos@edumanage.edu', phone: '+234 806 789 0123', address: 'Maryland, Lagos', joinDate: 'Nov 22, 2023', status: 'Active', avatar: null },
-  { id: '7', name: 'James Wilson', role: 'History Teacher', department: 'Humanities Dept.', email: 'j.wilson@edumanage.edu', phone: '+234 807 890 1234', address: 'Gbagada, Lagos', joinDate: 'Oct 01, 2021', status: 'Active', avatar: null },
-  { id: '8', name: 'Linda Garcia', role: 'Biology Teacher', department: 'Science Dept.', email: 'l.garcia@edumanage.edu', phone: '+234 808 901 2345', address: 'Apapa, Lagos', joinDate: 'Jan 15, 2024', status: 'Active', avatar: null },
-  { id: '9', name: 'Michael Brown', role: 'Chemistry Teacher', department: 'Science Dept.', email: 'm.brown@edumanage.edu', phone: '+234 809 012 3456', address: 'Festac, Lagos', joinDate: 'Sept 30, 2022', status: 'Active', avatar: null },
-  { id: '10', name: 'Susan Taylor', role: 'Art Instructor', department: 'Arts Dept.', email: 's.taylor@edumanage.edu', phone: '+234 810 123 4567', address: 'Ikoyi, Lagos', joinDate: 'May 05, 2020', status: 'Active', avatar: null },
-  { id: '11', name: 'Christopher Lee', role: 'Music Teacher', department: 'Arts Dept.', email: 'c.lee@edumanage.edu', phone: '+234 811 234 5678', address: 'Ajah, Lagos', joinDate: 'July 12, 2021', status: 'Active', avatar: null },
-  { id: '12', name: 'Jessica Davis', role: 'Physical Education', department: 'Sports Dept.', email: 'j.davis@edumanage.edu', phone: '+234 812 345 6789', address: 'Epe, Lagos', joinDate: 'Dec 18, 2018', status: 'Active', avatar: null },
-  { id: '13', name: 'Matthew Moore', role: 'IT Specialist', department: 'Administration', email: 'm.moore@edumanage.edu', phone: '+234 813 456 7890', address: 'Ogba, Lagos', joinDate: 'April 22, 2023', status: 'Active', avatar: null },
-  { id: '14', name: 'Karen White', role: 'Librarian', department: 'Library', email: 'k.white@edumanage.edu', phone: '+234 814 567 8901', address: 'Mushin, Lagos', joinDate: 'Aug 08, 2020', status: 'Active', avatar: null },
-  { id: '15', name: 'Paul Anderson', role: 'Security Head', department: 'Security', email: 'p.anderson@edumanage.edu', phone: '+234 815 678 9012', address: 'Agege, Lagos', joinDate: 'Feb 14, 2019', status: 'Active', avatar: null },
-]
-
-const MOCK_STAFF = {
-  total: MOCK_STAFF_MEMBERS.length,
-  active: MOCK_STAFF_MEMBERS.filter(m => m.status === 'Active').length,
-  on_leave: MOCK_STAFF_MEMBERS.filter(m => m.status === 'On Leave').length,
-  members: MOCK_STAFF_MEMBERS
-}
+const MOCK_STAFF_MEMBERS = adminMockViews.staff.members
+type StaffMember = (typeof MOCK_STAFF_MEMBERS)[number]
 
 const statusColors: Record<string, { bg: string; text: string }> = {
   Active: { bg: '#ECFDF5', text: '#059669' },
@@ -76,11 +22,23 @@ export default function StaffPage() {
   const [role, setRole] = useState('')
   const [status, setStatus] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const [selectedStaff, setSelectedStaff] = useState<typeof MOCK_STAFF_MEMBERS[0] | null>(null)
+  const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null)
   const [showDetails, setShowDetails] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
+  const [showAdd, setShowAdd] = useState(false)
   const [localMembers, setLocalMembers] = useState(MOCK_STAFF_MEMBERS)
-  const [editFormData, setEditFormData] = useState<typeof MOCK_STAFF_MEMBERS[0] | null>(null)
+  const [editFormData, setEditFormData] = useState<StaffMember | null>(null)
+  const [addFormData, setAddFormData] = useState<Omit<StaffMember, 'id'>>({
+    name: '',
+    role: '',
+    department: 'Mathematics Dept.',
+    email: '',
+    phone: '',
+    address: '',
+    joinDate: '',
+    status: 'Active',
+    avatar: null,
+  })
   
   const itemsPerPage = 10
 
@@ -106,12 +64,12 @@ export default function StaffPage() {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)))
   }
 
-  const handleViewDetails = (staff: typeof MOCK_STAFF_MEMBERS[0]) => {
+  const handleViewDetails = (staff: StaffMember) => {
     setSelectedStaff(staff)
     setShowDetails(true)
   }
 
-  const handleEditClick = (staff: typeof MOCK_STAFF_MEMBERS[0]) => {
+  const handleEditClick = (staff: StaffMember) => {
     setEditFormData({ ...staff })
     setShowEdit(true)
     setShowDetails(false)
@@ -126,9 +84,49 @@ export default function StaffPage() {
     setShowEdit(false)
   }
 
+  const handleAvatarUpload = (file: File | null, target: 'add' | 'edit') => {
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file.')
+      return
+    }
+    const maxBytes = 2 * 1024 * 1024
+    if (file.size > maxBytes) {
+      toast.error('Image is too large. Please upload a file under 2MB.')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : null
+      if (target === 'add') setAddFormData(prev => ({ ...prev, avatar: result }))
+      if (target === 'edit') setEditFormData(prev => prev ? ({ ...prev, avatar: result }) : prev)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handleAddStaff = (e: React.FormEvent) => {
+    e.preventDefault()
+    const nextId = (Math.max(0, ...localMembers.map(m => parseInt(m.id))) + 1).toString()
+    const newMember: StaffMember = { id: nextId, ...addFormData }
+    setLocalMembers(prev => [newMember, ...prev])
+    toast.success(`${newMember.name} added to staff directory!`)
+    setShowAdd(false)
+    setAddFormData({
+      name: '',
+      role: '',
+      department: 'Mathematics Dept.',
+      email: '',
+      phone: '',
+      address: '',
+      joinDate: '',
+      status: 'Active',
+      avatar: null,
+    })
+  }
+
   return (
     <AppLayout>
-      <Topbar action={{ label: 'Add Staff Member', onClick: () => {} }} />
+      <Topbar action={{ label: 'Add Staff Member', onClick: () => setShowAdd(true) }} />
 
       <div className="page-header animate-in">
         <div className="gold-accent" />
@@ -200,10 +198,19 @@ export default function StaffPage() {
                   <tr key={m.id}>
                     <td>
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
-                             style={{ background: 'linear-gradient(135deg, #C9A020, #8B6E10)' }}>
-                          {getInitials(m.name)}
-                        </div>
+                        {m.avatar ? (
+                          <img
+                            src={m.avatar}
+                            alt={m.name}
+                            className="w-9 h-9 rounded-full object-cover border flex-shrink-0"
+                            style={{ borderColor: '#E4E1D8' }}
+                          />
+                        ) : (
+                          <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+                               style={{ background: 'linear-gradient(135deg, #C9A020, #8B6E10)' }}>
+                            {getInitials(m.name)}
+                          </div>
+                        )}
                         <span className="font-semibold">{m.name}</span>
                       </div>
                     </td>
@@ -279,10 +286,18 @@ export default function StaffPage() {
                 <X size={20} />
               </button>
               <div className="absolute -bottom-12 left-8">
-                <div className="w-24 h-24 rounded-2xl border-4 border-white shadow-lg flex items-center justify-center text-3xl font-bold text-white overflow-hidden"
-                     style={{ background: 'linear-gradient(135deg, #C9A020, #8B6E10)' }}>
-                  {getInitials(selectedStaff.name)}
-                </div>
+                {selectedStaff.avatar ? (
+                  <img
+                    src={selectedStaff.avatar}
+                    alt={selectedStaff.name}
+                    className="w-24 h-24 rounded-2xl border-4 border-white shadow-lg object-cover"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-2xl border-4 border-white shadow-lg flex items-center justify-center text-3xl font-bold text-white overflow-hidden"
+                       style={{ background: 'linear-gradient(135deg, #C9A020, #8B6E10)' }}>
+                    {getInitials(selectedStaff.name)}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -375,6 +390,45 @@ export default function StaffPage() {
             <form onSubmit={handleUpdateStaff} className="p-8 space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Profile Picture</label>
+                  <div className="flex items-center gap-4">
+                    {editFormData.avatar ? (
+                      <img
+                        src={editFormData.avatar}
+                        alt="Staff profile preview"
+                        className="w-16 h-16 rounded-2xl object-cover border"
+                        style={{ borderColor: '#E4E1D8' }}
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-2xl border flex items-center justify-center text-xs font-bold text-gray-400"
+                           style={{ borderColor: '#E4E1D8' }}>
+                        No Photo
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={e => handleAvatarUpload(e.target.files?.[0] || null, 'edit')}
+                        className="input w-full"
+                      />
+                      <div className="mt-1 flex items-center gap-2">
+                        {editFormData.avatar && (
+                          <button
+                            type="button"
+                            onClick={() => setEditFormData(prev => prev ? ({ ...prev, avatar: null }) : prev)}
+                            className="text-xs font-semibold hover:underline"
+                            style={{ color: '#C9A020' }}
+                          >
+                            Remove photo
+                          </button>
+                        )}
+                        <span className="text-[11px]" style={{ color: '#A09080' }}>PNG/JPG, max 2MB</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Full Name</label>
                   <input 
                     type="text" required
@@ -443,6 +497,175 @@ export default function StaffPage() {
                 </button>
                 <button type="submit" className="btn-gold px-8 py-2.5 shadow-lg shadow-gold-500/20">
                   Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add Staff Modal */}
+      {showAdd && (
+        <div className="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
+            <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">Add Staff Member</h2>
+                <p className="text-xs text-gray-500 mt-1 uppercase tracking-widest">Create a new staff profile</p>
+              </div>
+              <button onClick={() => setShowAdd(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                <X size={20} className="text-gray-500" />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddStaff} className="p-8 space-y-5 overflow-y-auto">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Profile Picture</label>
+                  <div className="flex items-center gap-4">
+                    {addFormData.avatar ? (
+                      <img
+                        src={addFormData.avatar}
+                        alt="Staff profile preview"
+                        className="w-16 h-16 rounded-2xl object-cover border"
+                        style={{ borderColor: '#E4E1D8' }}
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-2xl border flex items-center justify-center text-xs font-bold text-gray-400"
+                           style={{ borderColor: '#E4E1D8' }}>
+                        No Photo
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={e => handleAvatarUpload(e.target.files?.[0] || null, 'add')}
+                        className="input w-full"
+                      />
+                      <div className="mt-1 flex items-center gap-2">
+                        {addFormData.avatar && (
+                          <button
+                            type="button"
+                            onClick={() => setAddFormData(prev => ({ ...prev, avatar: null }))}
+                            className="text-xs font-semibold hover:underline"
+                            style={{ color: '#C9A020' }}
+                          >
+                            Remove photo
+                          </button>
+                        )}
+                        <span className="text-[11px]" style={{ color: '#A09080' }}>PNG/JPG, max 2MB</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={addFormData.name}
+                    onChange={e => setAddFormData(prev => ({ ...prev, name: e.target.value }))}
+                    className="input w-full"
+                    placeholder="e.g. Dr. Jane Doe"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Role / Designation</label>
+                  <input
+                    type="text"
+                    required
+                    value={addFormData.role}
+                    onChange={e => setAddFormData(prev => ({ ...prev, role: e.target.value }))}
+                    className="input w-full"
+                    placeholder="e.g. Mathematics Teacher"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Department</label>
+                  <select
+                    value={addFormData.department}
+                    onChange={e => setAddFormData(prev => ({ ...prev, department: e.target.value }))}
+                    className="select w-full"
+                  >
+                    <option>Mathematics Dept.</option><option>Physics Dept.</option>
+                    <option>Administration</option><option>Humanities Dept.</option>
+                    <option>Science Dept.</option><option>Arts Dept.</option>
+                    <option>Sports Dept.</option><option>Library</option>
+                    <option>Security</option>
+                  </select>
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={addFormData.email}
+                    onChange={e => setAddFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="input w-full"
+                    placeholder="e.g. j.doe@edumanage.edu"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Phone Number</label>
+                  <input
+                    type="text"
+                    required
+                    value={addFormData.phone}
+                    onChange={e => setAddFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    className="input w-full"
+                    placeholder="+234..."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Status</label>
+                  <select
+                    value={addFormData.status}
+                    onChange={e => setAddFormData(prev => ({ ...prev, status: e.target.value }))}
+                    className="select w-full"
+                  >
+                    <option>Active</option>
+                    <option>On Leave</option>
+                  </select>
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Address</label>
+                  <input
+                    type="text"
+                    required
+                    value={addFormData.address}
+                    onChange={e => setAddFormData(prev => ({ ...prev, address: e.target.value }))}
+                    className="input w-full"
+                    placeholder="e.g. Ikeja, Lagos"
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Join Date</label>
+                  <input
+                    type="text"
+                    required
+                    value={addFormData.joinDate}
+                    onChange={e => setAddFormData(prev => ({ ...prev, joinDate: e.target.value }))}
+                    className="input w-full"
+                    placeholder="e.g. Jan 15, 2024"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-6 flex justify-end gap-3">
+                <button type="button" onClick={() => setShowAdd(false)} className="btn-outline px-8 py-2.5">
+                  Cancel
+                </button>
+                <button type="submit" className="btn-gold px-8 py-2.5 shadow-lg shadow-gold-500/20">
+                  Add Staff
                 </button>
               </div>
             </form>

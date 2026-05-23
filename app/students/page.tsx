@@ -5,16 +5,12 @@ import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import { studentApi } from '@/lib/api'
 import { getInitials } from '@/lib/utils'
+import { adminMockViews } from '@/lib/admin-mock-db'
 import { Eye, Pencil, Trash2, ChevronLeft, ChevronRight, X, Phone, Mail, MapPin, User, Calendar } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-const MOCK_STUDENTS_DATA = [
-  { id: '10001', name: 'Eleanor Vance', grade: 'Grade 12', section: 'Section A', admission_no: 'ADM-2023-001', parent: 'Mr. & Mrs. Vance', email: 'e.vance@example.com', phone: '+234 801 111 2222', address: '12 Oak Street, Lagos', gender: 'Female', dob: 'May 12, 2008', status: 'Active' },
-  { id: '10002', name: 'Luke Crain', grade: 'Grade 11', section: 'Section B', admission_no: 'ADM-2023-002', parent: 'Mr. Stephen Crain', email: 'l.crain@example.com', phone: '+234 802 222 3333', address: '45 Hill House, Lagos', gender: 'Male', dob: 'Oct 05, 2009', status: 'Active' },
-  { id: '10003', name: 'Shirley Crain', grade: 'Grade 12', section: 'Section A', admission_no: 'ADM-2022-045', parent: 'Mr. Stephen Crain', email: 's.crain@example.com', phone: '+234 803 333 4444', address: '22 Mortuary Road, Lagos', gender: 'Female', dob: 'Mar 20, 2008', status: 'Active' },
-  { id: '10004', name: 'Theodora Crain', grade: 'Grade 10', section: 'Section A', admission_no: 'ADM-2024-012', parent: 'Mr. Stephen Crain', email: 't.crain@example.com', phone: '+234 804 444 5555', address: '88 Blue Lane, Lagos', gender: 'Female', dob: 'Aug 15, 2010', status: 'Active' },
-  { id: '10005', name: 'Steven Crain', grade: 'Grade 9', section: 'Section B', admission_no: 'ADM-2024-089', parent: 'Mr. Stephen Crain', email: 'st.crain@example.com', phone: '+234 805 555 6666', address: '10 Writer\'s Block, Lagos', gender: 'Male', dob: 'Feb 10, 2011', status: 'Inactive' },
-]
+const MOCK_STUDENTS_DATA = adminMockViews.students.students
+type Student = (typeof MOCK_STUDENTS_DATA)[number]
 
 export default function StudentsPage() {
   const [page, setPage] = useState(1)
@@ -23,13 +19,13 @@ export default function StudentsPage() {
   const [status, setStatus] = useState('')
   
   const [localStudents, setLocalStudents] = useState(MOCK_STUDENTS_DATA)
-  const [selectedStudent, setSelectedStudent] = useState<typeof MOCK_STUDENTS_DATA[0] | null>(null)
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [showDetails, setShowDetails] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
   const [showAdd, setShowAdd] = useState(false)
-  const [editFormData, setEditFormData] = useState<typeof MOCK_STUDENTS_DATA[0] | null>(null)
+  const [editFormData, setEditFormData] = useState<Student | null>(null)
   const [addFormData, setAddFormData] = useState({
-    name: '', grade: 'Grade 10', section: 'Section A', admission_no: '', parent: '', email: '', phone: '', address: '', gender: 'Male', dob: '', status: 'Active'
+    name: '', grade: 'Grade 10', section: 'Section A', admission_no: '', parent: '', email: '', phone: '', address: '', gender: 'Male', dob: '', status: 'Active', avatar: ''
   })
 
   const itemsPerPage = 10
@@ -51,12 +47,12 @@ export default function StudentsPage() {
   const startIndex = (page - 1) * itemsPerPage
   const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage)
 
-  const handleViewDetails = (student: typeof MOCK_STUDENTS_DATA[0]) => {
+  const handleViewDetails = (student: Student) => {
     setSelectedStudent(student)
     setShowDetails(true)
   }
 
-  const handleEditClick = (student: typeof MOCK_STUDENTS_DATA[0]) => {
+  const handleEditClick = (student: Student) => {
     setEditFormData({ ...student })
     setShowEdit(true)
     setShowDetails(false)
@@ -80,8 +76,27 @@ export default function StudentsPage() {
     toast.success(`${newStudent.name} added to the system!`)
     setShowAdd(false)
     setAddFormData({
-      name: '', grade: 'Grade 10', section: 'Section A', admission_no: '', parent: '', email: '', phone: '', address: '', gender: 'Male', dob: '', status: 'Active'
+      name: '', grade: 'Grade 10', section: 'Section A', admission_no: '', parent: '', email: '', phone: '', address: '', gender: 'Male', dob: '', status: 'Active', avatar: ''
     })
+  }
+
+  const handleAvatarUpload = (file: File | null) => {
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file.')
+      return
+    }
+    const maxBytes = 2 * 1024 * 1024
+    if (file.size > maxBytes) {
+      toast.error('Image is too large. Please upload a file under 2MB.')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : ''
+      setAddFormData(prev => ({ ...prev, avatar: result }))
+    }
+    reader.readAsDataURL(file)
   }
 
   const handleDeleteStudent = (id: string) => {
@@ -137,10 +152,19 @@ export default function StudentsPage() {
                   <tr key={st.id} className="hover:bg-gray-50/50 transition-colors">
                     <td>
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
-                             style={{ background: 'linear-gradient(135deg, #C9A020, #8B6E10)' }}>
-                          {getInitials(st.name)}
-                        </div>
+                        {st.avatar ? (
+                          <img
+                            src={st.avatar}
+                            alt={st.name}
+                            className="w-9 h-9 rounded-full object-cover border flex-shrink-0"
+                            style={{ borderColor: '#E4E1D8' }}
+                          />
+                        ) : (
+                          <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+                               style={{ background: 'linear-gradient(135deg, #C9A020, #8B6E10)' }}>
+                            {getInitials(st.name)}
+                          </div>
+                        )}
                         <div>
                           <p className="font-semibold text-sm">{st.name}</p>
                           <p className="text-[10px]" style={{ color: '#A09080' }}>ID: {st.id}</p>
@@ -220,10 +244,18 @@ export default function StudentsPage() {
                 <X size={20} />
               </button>
               <div className="absolute -bottom-10 left-8">
-                <div className="w-20 h-20 rounded-2xl border-4 border-white shadow-lg flex items-center justify-center text-2xl font-bold text-white"
-                     style={{ background: 'linear-gradient(135deg, #C9A020, #8B6E10)' }}>
-                  {getInitials(selectedStudent.name)}
-                </div>
+                {selectedStudent.avatar ? (
+                  <img
+                    src={selectedStudent.avatar}
+                    alt={selectedStudent.name}
+                    className="w-20 h-20 rounded-2xl border-4 border-white shadow-lg object-cover"
+                  />
+                ) : (
+                  <div className="w-20 h-20 rounded-2xl border-4 border-white shadow-lg flex items-center justify-center text-2xl font-bold text-white"
+                       style={{ background: 'linear-gradient(135deg, #C9A020, #8B6E10)' }}>
+                    {getInitials(selectedStudent.name)}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -335,8 +367,8 @@ export default function StudentsPage() {
 
       {/* Add Student Modal */}
       {showAdd && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-[110] flex items-start justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
             <div className="px-8 py-6 border-b flex justify-between items-center bg-gray-50/50">
               <div>
                 <h2 className="text-xl font-bold text-gray-900">New Student Admission</h2>
@@ -347,8 +379,42 @@ export default function StudentsPage() {
               </button>
             </div>
 
-            <form onSubmit={handleAddStudent} className="p-8 space-y-5">
+            <form onSubmit={handleAddStudent} className="p-8 space-y-5 overflow-y-auto">
               <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Profile Picture</label>
+                  <div className="flex items-center gap-4">
+                    {addFormData.avatar ? (
+                      <img
+                        src={addFormData.avatar}
+                        alt="Student profile preview"
+                        className="w-16 h-16 rounded-2xl object-cover border"
+                        style={{ borderColor: '#E4E1D8' }}
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-2xl border flex items-center justify-center text-xs font-bold text-gray-400"
+                           style={{ borderColor: '#E4E1D8' }}>
+                        No Photo
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={e => handleAvatarUpload(e.target.files?.[0] || null)}
+                        className="input w-full"
+                      />
+                      <div className="mt-1 flex items-center gap-2">
+                        {addFormData.avatar && (
+                          <button type="button" onClick={() => setAddFormData(prev => ({ ...prev, avatar: '' }))} className="text-xs font-semibold hover:underline" style={{ color: '#C9A020' }}>
+                            Remove photo
+                          </button>
+                        )}
+                        <span className="text-[11px]" style={{ color: '#A09080' }}>PNG/JPG, max 2MB</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div className="col-span-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Full Name</label>
                   <input type="text" required placeholder="Student's full name" value={addFormData.name} onChange={e => setAddFormData({...addFormData, name: e.target.value})} className="input w-full" />

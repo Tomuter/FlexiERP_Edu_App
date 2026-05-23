@@ -1,24 +1,12 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import AppLayout from '@/components/layout/AppLayout'
 import Topbar from '@/components/layout/Topbar'
 import { academicsApi } from '@/lib/api'
+import { adminMockViews } from '@/lib/admin-mock-db'
 import { FolderOpen, Plus, User, Trophy, Trash2, Edit3, X, Check } from 'lucide-react'
 
-const MOCK_CLASSES = [
-  { id: 'c10', name: 'Class 10', sections: [{ id: 's10a', name: 'Section A' }, { id: 's10b', name: 'Section B' }] },
-  { id: 'c11', name: 'Class 11', sections: [{ id: 's11a', name: 'Section A' }] },
-  { id: 'c12', name: 'Class 12', sections: [{ id: 's12a', name: 'Section A' }] },
-]
-const MOCK_SUBJECTS = [
-  { id: 's1', code: 'MAT101', type: 'Core', name: 'Advanced Mathematics', teacher: 'Dr. Robert Chen', max_marks: '100 (Theory) / 50 (Practical)' },
-  { id: 's2', code: 'PHY101', type: 'Core', name: 'Physics Fundamentals', teacher: 'Sarah Jenkins', max_marks: '100 (Theory)' },
-  { id: 's3', code: 'ENG102', type: 'Language', name: 'English Literature', teacher: 'Prof. Alan Smith', max_marks: '100 (Theory)' },
-]
-const MOCK_TEACHERS = [
-  'Dr. Robert Chen', 'Sarah Jenkins', 'Prof. Alan Smith', 'Emma Watson', 'John Doe', 'Maria Garcia'
-]
 const typeStyle: Record<string, string> = {
   Core: 'badge-green', Language: 'badge-gold', Elective: 'badge-blue',
 }
@@ -27,18 +15,19 @@ export default function AcademicsPage() {
   const [selectedClass, setSelectedClass] = useState('c10')
   const [selectedSection, setSelectedSection] = useState('s10a')
   const [showForm, setShowForm] = useState(false)
-  const [localSubjects, setLocalSubjects] = useState(MOCK_SUBJECTS)
+  const [localSubjects, setLocalSubjects] = useState(adminMockViews.academics.subjects)
   const [editingSubject, setEditingSubject] = useState<any>(null)
+  const SUBJECTS_STORAGE_KEY = 'flexierp_subjects'
 
   // Form State
   const [formData, setFormData] = useState({
     name: '', code: '', type: 'Core', teacher: '', max_marks: '100 (Theory)'
   })
 
-  const { data: classes = MOCK_CLASSES } = useQuery({
+  const { data: classes = adminMockViews.academics.classes } = useQuery({
     queryKey: ['classes'],
     queryFn: () => academicsApi.getClasses().then(r => r.data),
-    placeholderData: MOCK_CLASSES,
+    placeholderData: adminMockViews.academics.classes,
   })
 
   // In a real app, this query would be enabled and filtered by class/section
@@ -49,7 +38,29 @@ export default function AcademicsPage() {
     enabled: false // Using local state for this simulation
   })
 
-  const currentClass = classes.find((c: typeof MOCK_CLASSES[0]) => c.id === selectedClass)
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(SUBJECTS_STORAGE_KEY)
+      if (!raw) return
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed) && parsed.length >= 0) {
+        setLocalSubjects(parsed)
+      }
+    } catch {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SUBJECTS_STORAGE_KEY, JSON.stringify(localSubjects))
+    } catch {
+      // ignore
+    }
+  }, [localSubjects])
+
+  const currentClass = classes.find((c: typeof adminMockViews.academics.classes[number]) => c.id === selectedClass)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -97,7 +108,7 @@ export default function AcademicsPage() {
           <div className="card w-56 flex-shrink-0 animate-in stagger-1 h-fit">
             <h3 className="font-bold mb-4">Class Structure</h3>
             <div className="space-y-1">
-              {classes.map((cls: typeof MOCK_CLASSES[0]) => (
+              {classes.map((cls: typeof adminMockViews.academics.classes[number]) => (
                 <div key={cls.id}>
                   <button
                     onClick={() => { setSelectedClass(cls.id); setSelectedSection(cls.sections[0]?.id) }}
@@ -105,7 +116,7 @@ export default function AcademicsPage() {
                     <FolderOpen size={14} style={{ color: '#6B6660' }} />
                     <span className="font-medium">{cls.name}</span>
                   </button>
-                  {selectedClass === cls.id && cls.sections.map((sec: typeof MOCK_CLASSES[0]['sections'][0]) => (
+                  {selectedClass === cls.id && cls.sections.map((sec: typeof adminMockViews.academics.classes[number]['sections'][number]) => (
                     <button key={sec.id}
                       onClick={() => setSelectedSection(sec.id)}
                       className="flex items-center gap-2 w-full pl-7 py-1.5 rounded-lg text-sm text-left transition-all"
@@ -157,7 +168,7 @@ export default function AcademicsPage() {
                       <label className="label">Assign Teacher</label>
                       <select className="select" value={formData.teacher} onChange={e => setFormData({...formData, teacher: e.target.value})} required>
                         <option value="">Select Teacher</option>
-                        {MOCK_TEACHERS.map(t => <option key={t}>{t}</option>)}
+                    {adminMockViews.academics.teachers.map(t => <option key={t}>{t}</option>)}
                       </select>
                     </div>
                     <div className="col-span-2">
@@ -178,7 +189,7 @@ export default function AcademicsPage() {
               <>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-bold text-lg">
-                    Subjects for {currentClass?.name} – {currentClass?.sections.find((s: typeof MOCK_CLASSES[0]['sections'][0]) => s.id === selectedSection)?.name}
+                    Subjects for {currentClass?.name} – {currentClass?.sections.find((s: typeof adminMockViews.academics.classes[number]['sections'][number]) => s.id === selectedSection)?.name}
                   </h2>
                   <span className="text-sm" style={{ color: '#6B6660' }}>{localSubjects.length} Active Subjects</span>
                 </div>
